@@ -55,18 +55,29 @@ class Detector:
               #Draw a rectangle around the faces
             
             # Font= cv.InitFont(cv.CV_FONT_HERSHEY_SIMPLEX, hscale= FontSize, vscale= 1.0, shear=0, thickness=1, lineType=8)
-            for (x, y, w, h) in faces:
-                #cv2.rectangle(frame, (x, y), (x+w, y+h), (120, 2, 0), 2)
-                a = int(x + (w/2))
-                b = int(y + (h/2))
-                # eye = [int(a-(a/2)), int(b-(b/2))]
-                #draw a TINY rectangle at the centre of the face so it look like a dot.
-                x = cv2.rectangle(frame, (a, b), (a, b), (500, 500, 0), 3)
-                print(a,',',b)
-
             if len(faces) > 0:
-                # print(frame)
-                print('SHape', frame.shape)
+
+                for (x, y, w, h) in faces:
+                    #default shows screen size is 480(H) X 640(W).
+                    a = int(x + (w/2))
+                    b = int(y + (h/2))
+                    #draw a TINY rectangle at the centre of the face so it look like a dot.
+                    x = cv2.rectangle(frame, (a, b), (a, b), (500, 500, 0), 3)
+                    center = cv2.rectangle(frame, (320,240), (320,240), (500, 500, 0), 3)
+                    frame_center = [320, 240]
+                    face_center = [a,b]
+                    
+                    for refrence, face in zip(frame_center, face_center):
+                        
+                        if(abs(refrence - face) > 10):
+                            print('Needs to move')
+                        else:
+                           print('No Need to move') 
+
+                    # print('Frame Center: ', frame_center)
+                    # print('Face Center: ', face_center)
+                    
+    
 
             # Display the resulting frame
             cv2.imshow('Detections', frame)
