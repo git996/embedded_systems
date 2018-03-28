@@ -1,9 +1,13 @@
 import cv2
 import logging as log
 from time import sleep
+import serial 
 import sys
 def main():
     print('hi')
+
+    # ser = serial.Serial('COM3', 9600)
+    
 
     #instantiate the class
     d  = Detector()
@@ -31,9 +35,14 @@ class Detector:
         log.basicConfig(filename='webcam.log',level=log.INFO)
         anterior = 0
 
+        #initserial
+        ser = serial.Serial('COM3', 9600)
+
+
 
 
         while True:
+            # sleep(1)
             if not video_capture.isOpened():
                 print('Unable to load camera.')
                 sleep(5)
@@ -56,7 +65,9 @@ class Detector:
             
             # Font= cv.InitFont(cv.CV_FONT_HERSHEY_SIMPLEX, hscale= FontSize, vscale= 1.0, shear=0, thickness=1, lineType=8)
             if len(faces) > 0:
-
+                val = "t1"
+                val = val.encode('utf-8')
+                ser.write(val)
                 for (x, y, w, h) in faces:
                     #default shows screen size is 480(H) X 640(W).
                     a = int(x + (w/2))
@@ -67,26 +78,26 @@ class Detector:
                     frame_center = [320, 240]
                     face_center = [a,b]
                     
-                    for refrence, face in zip(frame_center, face_center):
+                    # for refrence, face in zip(frame_center, face_center):
                         
-                        if(abs(refrence - face) > 10):
-                            print('Needs to move')
-                        else:
-                           print('No Need to move') 
+                    #     if(abs(refrence - face) > 10):
+                    #         print('Needs to move')
+                    #     else:
+                    #        print('No Need to move') 
 
                     # print('Frame Center: ', frame_center)
                     # print('Face Center: ', face_center)
-                    
-    
-
             # Display the resulting frame
-            cv2.imshow('Detections', frame)
             
+            else:
+                val = 't0'
+                val = val.encode('utf-8')
+                ser.write(val)
+                pass
+            cv2.imshow('Detections', frame)
             #add a event listener to close the frame
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 sys.exit()
-
-
         # When everything is done, release the capture
         video_capture.release()
         cv2.destroyAllWindows()
