@@ -36,7 +36,10 @@ class Detector:
         anterior = 0
 
         #initserial
-        ser = serial.Serial('COM3', 9600)
+        #ser = serial.Serial('COM1', 9600)
+        
+        #for ubuntu
+        ser = serial.Serial('COM2', 9600)
 
 
 
