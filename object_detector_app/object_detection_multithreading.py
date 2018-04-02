@@ -103,7 +103,7 @@ if __name__ == '__main__':
                                       width=args.width,
                                       height=args.height).start()
     fps = FPS().start()
-    ser = serial.Serial('COM3', 9600)
+    ser = serial.Serial('/dev/ttyACM0', 9600)
     val  = "t0"
 
     while True:
@@ -128,12 +128,7 @@ if __name__ == '__main__':
                     x = s[0].split(":")
                     # print(x[0])
                 # print(class_names)
-
-
-
-
-            for point, name, color in zip(rec_points, class_names, class_colors):
-                if (x[0] == "car"):
+                if (x[0] == "person"):
                     val  = "t1"
                     val = val.encode('utf-8')
                     ser.write(val)
@@ -141,6 +136,10 @@ if __name__ == '__main__':
                     val  = "t0"
                     val = val.encode('utf-8')
                     ser.write(val)
+
+
+
+            for point, name, color in zip(rec_points, class_names, class_colors):
                 cv2.rectangle(frame, (int(point['xmin'] * args.width), int(point['ymin'] * args.height)),
                               (int(point['xmax'] * args.width), int(point['ymax'] * args.height)), color, 3)
                 # cv2.rectangle(frame, (int(point['xmin'] * args.width), int(point['ymin'] * args.height)),
