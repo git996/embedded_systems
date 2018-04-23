@@ -39,7 +39,10 @@ class Detector:
         #ser = serial.Serial('COM1', 9600)
         
         #for ubuntu
-        ser = serial.Serial('COM2', 9600)
+        ser = serial.Serial('COM4', 9600)
+
+        frame_dimesion = [640, 480]
+        servo_max = 180
 
 
 
@@ -76,26 +79,26 @@ class Detector:
                     a = int(x + (w/2))
                     b = int(y + (h/2))
                     #draw a TINY rectangle at the centre of the face so it look like a dot.
-                    x = cv2.rectangle(frame, (a, b), (a, b), (500, 500, 0), 3)
+                    x = cv2.rectangle(frame, (a, b), (a, b), (120, 120, 0), 3)
                     center = cv2.rectangle(frame, (320,240), (320,240), (500, 500, 0), 3)
                     frame_center = [320, 240]
-                    face_center = [a,b]
                     
-                    # for refrence, face in zip(frame_center, face_center):
-                        
-                    #     if(abs(refrence - face) > 10):
-                    #         print('Needs to move')
-                    #     else:
-                    #        print('No Need to move') 
+                    face_center = [a,b]
 
-                    # print('Frame Center: ', frame_center)
-                    # print('Face Center: ', face_center)
+                    for coordinates in face_center:
+                        x_coord = face_center[0]
+                        y_coord =  frame_dimesion[1] - face_center[1] 
+                        print('Face: ', x_coord, ',  ', y_coord)
+
+                        mapped_x = int(x_coord / (frame_dimesion[0]/servo_max))
+                        mapped_y = int(y_coord / (frame_dimesion[1]/servo_max))
+                        val = 'X' + str(mapped_x) + 'Y' + str(mapped_y)
+                        val = val.encode('utf-8')
+                        print('Serial Val: ',val)
+                        # ser.write(val)
             # Display the resulting frame
             
             else:
-                val = 't0'
-                val = val.encode('utf-8')
-                ser.write(val)
                 pass
             cv2.imshow('Detections', frame)
             #add a event listener to close the frame
