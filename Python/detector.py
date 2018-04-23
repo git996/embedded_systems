@@ -43,6 +43,7 @@ class Detector:
 
         frame_dimesion = [640, 480]
         servo_max = 180
+        base_servo = 90
 
 
 
@@ -71,9 +72,6 @@ class Detector:
             
             # Font= cv.InitFont(cv.CV_FONT_HERSHEY_SIMPLEX, hscale= FontSize, vscale= 1.0, shear=0, thickness=1, lineType=8)
             if len(faces) > 0:
-                val = "t1"
-                val = val.encode('utf-8')
-                ser.write(val)
                 for (x, y, w, h) in faces:
                     #default shows screen size is 480(H) X 640(W).
                     a = int(x + (w/2))
@@ -86,16 +84,25 @@ class Detector:
                     face_center = [a,b]
 
                     for coordinates in face_center:
+                        sleep(.015)
                         x_coord = face_center[0]
                         y_coord =  frame_dimesion[1] - face_center[1] 
                         print('Face: ', x_coord, ',  ', y_coord)
-
-                        mapped_x = int(x_coord / (frame_dimesion[0]/servo_max))
+                        mapped_x = int(180 - (x_coord / (frame_dimesion[0]/servo_max)))
                         mapped_y = int(y_coord / (frame_dimesion[1]/servo_max))
-                        val = 'X' + str(mapped_x) + 'Y' + str(mapped_y)
+
+                        # move the base servo (in the x axis) if object gets close to the edge
+                        if mapped_x > 130 and  base_servo < 160:
+                            base_servo = base_servo + 20;
+
+                        if mapped_x < 30 and base_servo > 20:
+                            base_servo = base_servo - 20;
+
+                        val = 'X' + str(mapped_x) + 'Y' + str(mapped_y) +'Z'+str(int(base_servo))
                         val = val.encode('utf-8')
                         print('Serial Val: ',val)
-                        # ser.write(val)
+                        ser.write(val)
+
             # Display the resulting frame
             
             else:

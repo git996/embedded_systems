@@ -103,7 +103,7 @@ if __name__ == '__main__':
                                       width=args.width,
                                       height=args.height).start()
     fps = FPS().start()
-    ser = serial.Serial('COM3', 9600)
+    ser = serial.Serial('COM4', 9600)
     val  = "t0"
 
     while True:
