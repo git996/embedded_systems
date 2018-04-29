@@ -3,6 +3,7 @@ import logging as log
 from time import sleep
 import serial 
 import sys
+import winsound
 def main():
     print('hi')
 
@@ -44,6 +45,7 @@ class Detector:
         frame_dimesion = [640, 480]
         servo_max = 180
         base_servo = 90
+        # face_limit = []
 
 
 
@@ -71,7 +73,8 @@ class Detector:
               #Draw a rectangle around the faces
             
             # Font= cv.InitFont(cv.CV_FONT_HERSHEY_SIMPLEX, hscale= FontSize, vscale= 1.0, shear=0, thickness=1, lineType=8)
-            if len(faces) > 0:
+            #condinitonal statement below if executed if only 1 face is detected.
+            if (len(faces) == 1):
                 for (x, y, w, h) in faces:
                     #default shows screen size is 480(H) X 640(W).
                     a = int(x + (w/2))
@@ -104,8 +107,12 @@ class Detector:
                         ser.write(val)
 
             # Display the resulting frame
-            
+            #if multiple faces are detected. don't send serail data to the servos
+            elif (len(faces) < 1):
+                pass
             else:
+                print('Multiple Faces Detected!')
+                winsound.Beep(500, 500)
                 pass
             cv2.imshow('Detections', frame)
             #add a event listener to close the frame
