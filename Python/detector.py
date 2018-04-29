@@ -3,6 +3,7 @@ import logging as log
 from time import sleep
 import serial 
 import sys
+import winsound
 def main():
     print('hi')
 
@@ -39,7 +40,12 @@ class Detector:
         #ser = serial.Serial('COM1', 9600)
         
         #for ubuntu
-        ser = serial.Serial('COM2', 9600)
+        ser = serial.Serial('COM4', 9600)
+
+        frame_dimesion = [640, 480]
+        servo_max = 180
+        base_servo = 90
+        # face_limit = []
 
 
 
@@ -67,35 +73,46 @@ class Detector:
               #Draw a rectangle around the faces
             
             # Font= cv.InitFont(cv.CV_FONT_HERSHEY_SIMPLEX, hscale= FontSize, vscale= 1.0, shear=0, thickness=1, lineType=8)
-            if len(faces) > 0:
-                val = "t1"
-                val = val.encode('utf-8')
-                ser.write(val)
+            #condinitonal statement below if executed if only 1 face is detected.
+            if (len(faces) == 1):
                 for (x, y, w, h) in faces:
                     #default shows screen size is 480(H) X 640(W).
                     a = int(x + (w/2))
                     b = int(y + (h/2))
                     #draw a TINY rectangle at the centre of the face so it look like a dot.
-                    x = cv2.rectangle(frame, (a, b), (a, b), (500, 500, 0), 3)
+                    x = cv2.rectangle(frame, (a, b), (a, b), (120, 120, 0), 3)
                     center = cv2.rectangle(frame, (320,240), (320,240), (500, 500, 0), 3)
                     frame_center = [320, 240]
-                    face_center = [a,b]
                     
-                    # for refrence, face in zip(frame_center, face_center):
-                        
-                    #     if(abs(refrence - face) > 10):
-                    #         print('Needs to move')
-                    #     else:
-                    #        print('No Need to move') 
+                    face_center = [a,b]
 
-                    # print('Frame Center: ', frame_center)
-                    # print('Face Center: ', face_center)
+                    for coordinates in face_center:
+                        sleep(.015)
+                        x_coord = face_center[0]
+                        y_coord =  frame_dimesion[1] - face_center[1] 
+                        print('Face: ', x_coord, ',  ', y_coord)
+                        mapped_x = int(180 - (x_coord / (frame_dimesion[0]/servo_max)))
+                        mapped_y = int(y_coord / (frame_dimesion[1]/servo_max))
+
+                        # move the base servo (in the x axis) if object gets close to the edge
+                        if mapped_x > 130 and  base_servo < 160:
+                            base_servo = base_servo + 20;
+
+                        if mapped_x < 30 and base_servo > 20:
+                            base_servo = base_servo - 20;
+
+                        val = 'X' + str(mapped_x) + 'Y' + str(mapped_y) +'Z'+str(int(base_servo))
+                        val = val.encode('utf-8')
+                        print('Serial Val: ',val)
+                        ser.write(val)
+
             # Display the resulting frame
-            
+            #if multiple faces are detected. don't send serail data to the servos
+            elif (len(faces) < 1):
+                pass
             else:
-                val = 't0'
-                val = val.encode('utf-8')
-                ser.write(val)
+                print('Multiple Faces Detected!')
+                winsound.Beep(500, 500)
                 pass
             cv2.imshow('Detections', frame)
             #add a event listener to close the frame
