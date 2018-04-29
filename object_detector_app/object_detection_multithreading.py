@@ -103,11 +103,7 @@ if __name__ == '__main__':
                                       width=args.width,
                                       height=args.height).start()
     fps = FPS().start()
-<<<<<<< HEAD
     ser = serial.Serial('/dev/ttyACM0', 9600)
-=======
-    ser = serial.Serial('COM4', 9600)
->>>>>>> 03e8356e9621075390895284b0efffc7afb11475
     val  = "t0"
 
     while True:
