@@ -37,13 +37,13 @@ class Detector:
         anterior = 0
 
         #initserial
-        ser = serial.Serial('COM1', 9600)
+        ser = serial.Serial('COM4', 9600)
         
         #for ubuntu
         #ser = serial.Serial('/dev/ttyACM0', 9600)
 
         frame_dimesion = [640, 480]
-        servo_max = 180
+        servo_max = 150
         base_servo = 90
         # face_limit = []
 
@@ -82,7 +82,7 @@ class Detector:
                     #draw a TINY rectangle at the centre of the face so it look like a dot.
                     x = cv2.rectangle(frame, (a, b), (a, b), (120, 120, 0), 3)
                     center = cv2.rectangle(frame, (320,240), (320,240), (500, 500, 0), 3)
-                    frame_center = [320, 240]
+                    # frame_center = [350, 240]
                     
                     face_center = [a,b]
 
@@ -91,8 +91,13 @@ class Detector:
                         x_coord = face_center[0]
                         y_coord =  frame_dimesion[1] - face_center[1] 
                         print('Face: ', x_coord, ',  ', y_coord)
-                        mapped_x = int(180 - (x_coord / (frame_dimesion[0]/servo_max)))
-                        mapped_y = int(y_coord / (frame_dimesion[1]/servo_max))
+                        mapped_x = int(176 - (x_coord / (frame_dimesion[0]/servo_max)))
+                        mapped_y = int(180 - (y_coord / (frame_dimesion[1]/servo_max)))
+
+                        # if mapped_x > 50:
+                        #     mapped_x = mapped_x - 20
+                        # elif x_coord < 40:
+                        #     mapped_x = mapped_x + 20
 
                         # move the base servo (in the x axis) if object gets close to the edge
                         if mapped_x > 130 and  base_servo < 160:
