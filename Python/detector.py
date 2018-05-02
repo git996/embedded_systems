@@ -3,7 +3,7 @@ import logging as log
 from time import sleep
 import serial 
 import sys
-import winsound
+# import winsound
 def main():
     print('hi')
 
@@ -37,10 +37,10 @@ class Detector:
         anterior = 0
 
         #initserial
-        #ser = serial.Serial('COM1', 9600)
+        ser = serial.Serial('COM1', 9600)
         
         #for ubuntu
-        ser = serial.Serial('COM4', 9600)
+        #ser = serial.Serial('/dev/ttyACM0', 9600)
 
         frame_dimesion = [640, 480]
         servo_max = 180
@@ -112,7 +112,7 @@ class Detector:
                 pass
             else:
                 print('Multiple Faces Detected!')
-                winsound.Beep(500, 500)
+                # winsound.Beep(500, 500)
                 pass
             cv2.imshow('Detections', frame)
             #add a event listener to close the frame
