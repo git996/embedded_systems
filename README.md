@@ -1,4 +1,4 @@
-# Object Tracing robitic arm.
+# Object Tracking robitic arm.
 Embedded Systems (8234).
 
 A project I did for one of my classes in early 2018. 
